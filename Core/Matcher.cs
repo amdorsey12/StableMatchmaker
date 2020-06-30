@@ -6,33 +6,33 @@ namespace Dorsey.StableMatchmaker
 {
     public class Matcher : IMatcher
     {
-        public IEnumerable<IEnumerable<string>> Match(IDictionary<ICandidate, IList<string>> setOne, IDictionary<ICandidate, IList<string>> setTwo)
+        public IEnumerable<IEnumerable<string>> Match(IEnumerable<ICandidate> proposers, IEnumerable<ICandidate> proposee)
         {
             var matches = new List<List<string>>();
             string currentMatch = String.Empty;
-            while (setOne.Where(x => x.Key.IsMatched == false).Count() > 0)
+            while (proposers.Where(x => x.IsMatched == false).Count() > 0)
             {
-                var suitor = setOne.Where(x => x.Key.IsMatched == false).FirstOrDefault();
-                Candidate potentialMatch = (Candidate) setTwo.Where(x => x.Key.Name == suitor.Value.FirstOrDefault()).FirstOrDefault().Key;
+                var proposer = proposers.Where(x => x.IsMatched == false).FirstOrDefault();
+                Candidate potentialMatch = (Candidate) proposee.Where(x => x.Name == proposer.Preferences.FirstOrDefault()).FirstOrDefault();
                 if (!potentialMatch.IsMatched)
                 {
-                    matches.Add(new List<string>(){suitor.Key.Name, potentialMatch.Name});
-                    currentMatch = suitor.Key.Name;
-                    setOne.Keys.Where(x => x.Name == suitor.Key.Name).FirstOrDefault().IsMatched = true;
-                    setTwo.Keys.Where(x => x.Name == potentialMatch.Name).FirstOrDefault().IsMatched = true;
+                    matches.Add(new List<string>(){proposer.Name, potentialMatch.Name});
+                    currentMatch = proposer.Name;
+                    proposers.Where(x => x.Name == proposer.Name).FirstOrDefault().IsMatched = true;
+                    proposee.Where(x => x.Name == potentialMatch.Name).FirstOrDefault().IsMatched = true;
                 }
                 else
                 {
-                    if (setTwo[potentialMatch].IndexOf(suitor.Key.Name) < setTwo[potentialMatch].IndexOf(currentMatch))
+                    if (potentialMatch.Preferences.IndexOf(proposer.Name) < potentialMatch.Preferences.IndexOf(currentMatch))
                     {
                         matches.RemoveAll( x => x.Any( s => s.Contains(potentialMatch.Name)));
-                        matches.Add(new List<string>() {suitor.Key.Name, potentialMatch.Name});
-                        setOne.Keys.Where(x => x.Name == suitor.Key.Name).FirstOrDefault().IsMatched = true;
-                        setOne.Keys.Where(x => x.Name == currentMatch).FirstOrDefault().IsMatched = false;
+                        matches.Add(new List<string>() {proposer.Name, potentialMatch.Name});
+                        proposers.Where(x => x.Name == proposer.Name).FirstOrDefault().IsMatched = true;
+                        proposers.Where(x => x.Name == currentMatch).FirstOrDefault().IsMatched = false;
                     }
                     else 
                     {
-                        setOne[suitor.Key].Remove(potentialMatch.Name);
+                        proposer.Preferences.Remove(potentialMatch.Name);
                     }
                 }
             }
