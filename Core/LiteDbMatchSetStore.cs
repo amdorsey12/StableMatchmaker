@@ -21,10 +21,21 @@ namespace Dorsey.StableMatchmaker
         {
             return Collection.FindOne(x => x.Id == id);
         }
-
         public void Store(IMatchSet set)
         {
             Collection.Insert(set);
+        }
+        public void MarkReady(string id)
+        {
+            var set = Collection.FindById(id);
+            set.IsReady = true;
+            Collection.Update(set);
+        }
+        public void MarkNotReady(string id)
+        {
+            var set = Collection.FindById(id);
+            set.IsReady = false;
+            Collection.Update(set);
         }
         public void Dispose()
             => Database.Dispose();

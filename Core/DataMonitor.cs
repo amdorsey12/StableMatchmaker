@@ -10,7 +10,8 @@ namespace Dorsey.StableMatchmaker
         private ICandidateStore CandidateStore { get; set; }
         private IMatchSetStore MatchSetStore { get; set; }
         private string MatchSetId { get; set; }
-        public event Action<IMatchSet> Triggered;
+        public event Action<IMatchSet> Ready;
+        public event Action<IMatchSet> NotReady;
         public DataMonitor(ICandidateStore candidateStore, IMatchSetStore matchSetStore, string matchSetId)
          {
              this.CandidateStore = candidateStore;
@@ -27,11 +28,15 @@ namespace Dorsey.StableMatchmaker
                 var candidates = (List<ICandidate>) CandidateStore.Get(set.Id);
                 if (candidates.Count == set.Capacity)
                 {
-                    Triggered?.Invoke(set);
+                    Ready?.Invoke(set);
                 }
-                else if(candidates.Count % 2 == 0)
+                else if(candidates.Count % 2 == 0 && candidates.Count > 0)
                 {
-                    Triggered?.Invoke(set);
+                    Ready?.Invoke(set);
+                }
+                else
+                {
+                    NotReady?.Invoke(set);
                 }
             }
         }

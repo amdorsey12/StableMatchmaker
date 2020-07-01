@@ -5,6 +5,6 @@ namespace Dorsey.StableMatchmaker
 {
     public interface ISetProcessor
     {
-        Tuple<IDictionary<ICandidate, IList<string>>, IDictionary<ICandidate, IList<string>>> Process(IDictionary<ICandidate, IList<string>> Data);
+        Tuple<IList<ICandidate>, IList<ICandidate>> Process(IEnumerable<ICandidate> candidates);
     }
 }

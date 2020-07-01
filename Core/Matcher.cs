@@ -13,7 +13,7 @@ namespace Dorsey.StableMatchmaker
             while (proposers.Where(x => x.IsMatched == false).Count() > 0)
             {
                 var proposer = proposers.Where(x => x.IsMatched == false).FirstOrDefault();
-                Candidate potentialMatch = (Candidate) proposee.Where(x => x.Name == proposer.Preferences.FirstOrDefault()).FirstOrDefault();
+                var potentialMatch = proposee.Where(x => x.Name == proposer.Preferences.FirstOrDefault()).FirstOrDefault();
                 if (!potentialMatch.IsMatched)
                 {
                     matches.Add(new List<string>(){proposer.Name, potentialMatch.Name});

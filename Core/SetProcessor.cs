@@ -5,19 +5,19 @@ namespace Dorsey.StableMatchmaker
 {
     public class SetProcessor : ISetProcessor
     {
-        public Tuple<IDictionary<ICandidate, IList<string>>, IDictionary<ICandidate, IList<string>>> Process(IDictionary<ICandidate, IList<string>> Data)
+        public Tuple<IList<ICandidate>, IList<ICandidate>> Process(IEnumerable<ICandidate> candidates)
         {
-            IDictionary<ICandidate, IList<string>> proposers = new Dictionary<ICandidate, IList<string>>();
-            IDictionary<ICandidate, IList<string>> proposees = new Dictionary<ICandidate, IList<string>>();
-            foreach (var datum in Data)
+            IList<ICandidate> proposers = new List<ICandidate>();
+            IList<ICandidate> proposees = new List<ICandidate>();
+            foreach (var candidate in candidates)
             {
-                if (datum.Key.CandidateType == CandidateType.Propoer)
+                if (candidate.CandidateType == CandidateType.Propoer)
                 {
-                    proposers.Add(datum);
+                    proposers.Add(candidate);
                 }
                 else
                 {
-                    proposees.Add(datum);
+                    proposees.Add(candidate);
                 }
             }
             return Tuple.Create(proposers, proposees);

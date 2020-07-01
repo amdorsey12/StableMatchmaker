@@ -1,10 +1,12 @@
+using System;
 using System.Collections.Generic;
 
 namespace Dorsey.StableMatchmaker
 {
-    public class Candidate : ICandidate
+    public class LiteDbCandidate : ICandidate
     {
-        public string Id { get; set;}
+        [LiteDB.BsonId]
+        public string Id { get; private set; } = Guid.NewGuid().ToString();
         public string Name { get; set; }
         public bool IsMatched { get; set; } = false;
         public CandidateType CandidateType { get; set; }

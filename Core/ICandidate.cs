@@ -4,7 +4,7 @@ namespace Dorsey.StableMatchmaker
 {
     public interface ICandidate
     {
-        string Id { get; set; }
+        string Id { get; }
         string Name { get; set; }
         bool IsMatched { get; set; }
         CandidateType  CandidateType { get; set; }
