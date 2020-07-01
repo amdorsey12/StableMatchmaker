@@ -7,7 +7,6 @@ namespace Dorsey.StableMatchmaker
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
             List<ICandidate> proposers = new List<ICandidate>()
             {
                 { new Candidate() { Name = "Jack", IsMatched = false, Preferences = new List<string>{ "Jenny", "Sarah", "Karen" }}},
@@ -27,7 +26,6 @@ namespace Dorsey.StableMatchmaker
             foreach (List<string> match in matches)
             {
                 Console.WriteLine($"{match[0]} is matched with {match[1]}");
-                Console.ReadLine();
             }
         }
     }
