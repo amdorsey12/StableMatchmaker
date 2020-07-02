@@ -12,7 +12,7 @@ namespace Dorsey.StableMatchmaker
         private IMatchSet MatchSet { get; set; }
         public event Action<IMatchSet> Ready;
         public event Action<IMatchSet> NotReady;
-        
+
         public DataMonitor(ICandidateStore candidateStore, IMatchSetStore matchSetStore, IMatchSet matchSet)
          {
              this.CandidateStore = candidateStore;
@@ -30,11 +30,7 @@ namespace Dorsey.StableMatchmaker
                 {
                     Ready?.Invoke(MatchSet);
                 }
-                else if(count % 2 == 0 && count > 0)
-                {
-                    Ready?.Invoke(MatchSet);
-                }
-                else if (count % 2 != 0 && count > 0)
+                else
                 {
                     NotReady?.Invoke(MatchSet);
                 }
