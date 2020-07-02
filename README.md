@@ -39,6 +39,7 @@ using (var manager = new Manager(new LiteDbCandidateStore(), new LiteDbMatchSetS
         }
     }
     manager.Terminate();
+}
 ```
 Output
 ```
