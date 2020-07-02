@@ -23,16 +23,16 @@ namespace Dorsey.StableMatchmaker
             {
                 List<ICandidate> proposers = new List<ICandidate>()
                 {
-                    { new LiteDbCandidate() { Name = "Jack", IsMatched = false, CandidateType = CandidateType.Proposer, Preferences = new List<string>{ "Jenny", "Sarah", "Karen" }, MatchSetId = couples.Id }},
-                    { new LiteDbCandidate() { Name = "Benjamin", IsMatched = false, CandidateType = CandidateType.Proposer, Preferences = new List<string>{ "Sarah", "Karen", "Jenny",}, MatchSetId = couples.Id }},
-                    { new LiteDbCandidate() { Name = "Charles", IsMatched = false, CandidateType = CandidateType.Proposer, Preferences = new List<string>{ "Jenny", "Karen", "Sarah" }, MatchSetId = couples.Id }}
+                    { new LiteDbCandidate() { Name = "Jack", IsMatched = false, CandidateType = CandidateType.Proposer, Preferences = new List<string>{ "Jenny", "Sarah", "Britney" }, MatchSetId = couples.Id }},
+                    { new LiteDbCandidate() { Name = "Benjamin", IsMatched = false, CandidateType = CandidateType.Proposer, Preferences = new List<string>{ "Sarah", "Britney", "Jenny",}, MatchSetId = couples.Id }},
+                    { new LiteDbCandidate() { Name = "Charles", IsMatched = false, CandidateType = CandidateType.Proposer, Preferences = new List<string>{ "Jenny", "Britney", "Sarah" }, MatchSetId = couples.Id }}
                 };
 
                 List<ICandidate> proposees = new List<ICandidate>()
                 {
                     { new LiteDbCandidate() { Name = "Jenny", IsMatched = false, CandidateType = CandidateType.Proposee, Preferences = new List<string>{ "Jack", "Benjamin", "Charles" }, MatchSetId = couples.Id }},
                     { new LiteDbCandidate() { Name = "Sarah", IsMatched = false, CandidateType = CandidateType.Proposee, Preferences = new List<string>{ "Benjamin", "Jack", "Charles" }, MatchSetId = couples.Id }},
-                    { new LiteDbCandidate() { Name = "Karen", IsMatched = false, CandidateType = CandidateType.Proposee, Preferences = new List<string>{ "Chales", "Benjamin", "Jack" }, MatchSetId = couples.Id }}
+                    { new LiteDbCandidate() { Name = "Britney", IsMatched = false, CandidateType = CandidateType.Proposee, Preferences = new List<string>{ "Chales", "Benjamin", "Jack" }, MatchSetId = couples.Id }}
                 };
                 manager.Start();
                 manager.Collect(proposers);

@@ -14,6 +14,7 @@ namespace Dorsey.StableMatchmaker
             Database = new LiteDatabase(@"Candidates.db");
             Collection = Database.GetCollection<LiteDbCandidate>("candidates");
         }
+
         public void Delete(IEnumerable<ICandidate> candidates)
         {
             foreach (ICandidate candidate in candidates)
@@ -21,15 +22,18 @@ namespace Dorsey.StableMatchmaker
                 Collection.Delete(candidate.Id);
             }
         }
+
         public IEnumerable<ICandidate> Get(string id)
         {
             return Collection.Find(x => x.MatchSetId == id).ToList();
         }
+
         public int GetCount(string id)
         {
             var test = Collection.Find(x => x.MatchSetId == id).ToList().Count;
             return test;
         }
+
         public void Store(IEnumerable<ICandidate> candidates)
         {
             foreach (LiteDbCandidate candidate in candidates)
@@ -37,6 +41,7 @@ namespace Dorsey.StableMatchmaker
                 Collection.Insert(candidate);
             }
         }
+        
         public void Dispose()
             => Database.Dispose();
     }

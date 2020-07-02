@@ -12,6 +12,7 @@ namespace Dorsey.StableMatchmaker
         private IMatcher Matcher { get; set; }
         private IMatchSet Set { get; set; }
         public bool CanExecute { get; private set; }
+
         public Manager(ICandidateStore candidateStore, IMatchSetStore matchSetStore, IMatchSet set)
         {
             this.CandidateStore = candidateStore;
@@ -22,6 +23,7 @@ namespace Dorsey.StableMatchmaker
             this.Matcher = new Matcher();
             MatchSetStore.Store(Set);
         }
+        
         public IEnumerable<IEnumerable<string>> ExecuteMatch()
         {
             if (CanExecute)
@@ -49,22 +51,27 @@ namespace Dorsey.StableMatchmaker
                 Monitor.NotReady += NotReady;
             }
         }
+
         public void Collect(IEnumerable<ICandidate> candidates)
         {
             CandidateStore.Store(candidates);
         }
+
         public void Terminate()
             => Monitor.IsRunning = false;
+
         public void Ready(IMatchSet matchSet)
         {
             MatchSetStore.MarkReady(matchSet.Id);
             CanExecute = true;
         }
+
         public void NotReady(IMatchSet matchSet)
         {
             MatchSetStore.MarkNotReady(matchSet.Id);
             CanExecute = false;
         }
+        
         public void Dispose()
         {
             CandidateStore.Dispose();

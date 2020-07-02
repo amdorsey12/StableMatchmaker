@@ -12,6 +12,7 @@ namespace Dorsey.StableMatchmaker
         private IMatchSet MatchSet { get; set; }
         public event Action<IMatchSet> Ready;
         public event Action<IMatchSet> NotReady;
+        
         public DataMonitor(ICandidateStore candidateStore, IMatchSetStore matchSetStore, IMatchSet matchSet)
          {
              this.CandidateStore = candidateStore;
