@@ -34,7 +34,7 @@ namespace Dorsey.StableMatchmaker
                 {
                     Ready?.Invoke(set);
                 }
-                else
+                else if (candidates.Count % 2 != 0 && candidates.Count > 0)
                 {
                     NotReady?.Invoke(set);
                 }
