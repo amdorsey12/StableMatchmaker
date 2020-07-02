@@ -1,17 +1,18 @@
 using System.Collections.Generic;
 using LiteDB;
+using System.Linq;
 
 namespace Dorsey.StableMatchmaker
 {
     public class LiteDbCandidateStore : ICandidateStore
     {
         private LiteDatabase Database { get; set; }
-        private ILiteCollection<ICandidate> Collection { get; set; }
+        private ILiteCollection<LiteDbCandidate> Collection { get; set; }
         
         public LiteDbCandidateStore()
         {
             Database = new LiteDatabase(@"Candidates.db");
-            Collection = Database.GetCollection<ICandidate>("candidates");
+            Collection = Database.GetCollection<LiteDbCandidate>("candidates");
         }
         public void Delete(IEnumerable<ICandidate> candidates)
         {
@@ -20,18 +21,21 @@ namespace Dorsey.StableMatchmaker
                 Collection.Delete(candidate.Id);
             }
         }
-        public IList<ICandidate> Get(string id)
+        public IEnumerable<ICandidate> Get(string id)
         {
-            var candidates = new List<ICandidate>();
-            foreach(ICandidate candidate in Collection.Find(x => x.Id == id))
-            {
-                candidates.Add(candidate);
-            }
-            return candidates;
+            return Collection.Find(x => x.MatchSetId == id).ToList();
+        }
+        public int GetCount(string id)
+        {
+            var test = Collection.Find(x => x.MatchSetId == id).ToList().Count;
+            return test;
         }
         public void Store(IEnumerable<ICandidate> candidates)
         {
-            Collection.Insert(candidates);
+            foreach (LiteDbCandidate candidate in candidates)
+            {
+                Collection.Insert(candidate);
+            }
         }
         public void Dispose()
             => Database.Dispose();

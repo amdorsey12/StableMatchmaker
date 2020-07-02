@@ -9,20 +9,6 @@ namespace Dorsey.StableMatchmaker
     {
         static async Task Main(string[] args)
         {
-            List<ICandidate> proposers = new List<ICandidate>()
-            {
-                { new LiteDbCandidate() { Name = "Jack", IsMatched = false, Preferences = new List<string>{ "Jenny", "Sarah", "Karen" }}},
-                { new LiteDbCandidate() { Name = "Benjamin", IsMatched = false, Preferences = new List<string>{ "Sarah", "Karen", "Jenny" }}},
-                { new LiteDbCandidate() { Name = "Charles", IsMatched = false, Preferences = new List<string>{ "Jenny", "Karen", "Sarah" }}}
-            };
-
-            List<ICandidate> proposees = new List<ICandidate>()
-            {
-                { new LiteDbCandidate() { Name = "Jenny", IsMatched = false, Preferences = new List<string>{ "Jack", "Benjamin", "Charles" }}},
-                { new LiteDbCandidate() { Name = "Sarah", IsMatched = false, Preferences = new List<string>{ "Benjamin", "Jack", "Charles" }}},
-                { new LiteDbCandidate() { Name = "Karen", IsMatched = false, Preferences = new List<string>{ "Chales", "Benjamin", "Jack" }}}
-            };
-
             //Testing algorithm directly
             /*var matcher = new Matcher();
 
@@ -31,21 +17,37 @@ namespace Dorsey.StableMatchmaker
                 Console.WriteLine($"{match[0]} is matched with {match[1]}");
             }*/
 
-            var manager = new Manager(new LiteDbCandidateStore(), new LiteDbMatchSetStore(), 
-                new LiteDbMatchSet{ Id = Guid.NewGuid().ToString(), Name = "Couples", Capacity = 6, IsReady = false});
-            manager.Start();
-            manager.Collect(proposers);
-            manager.Collect(proposees);
-            await Task.Delay(2000);
-            if (manager.CanExecute)
+            IMatchSet couples = new LiteDbMatchSet{ Name = "Couples", Capacity = 6, IsReady = false };
+            using (var manager = new Manager(new LiteDbCandidateStore(), new LiteDbMatchSetStore(), 
+                couples))
             {
-                Console.WriteLine("Ready to execute algorithm.");
-                foreach (List<string> match in manager.ExecuteMatch())
+                List<ICandidate> proposers = new List<ICandidate>()
                 {
-                    Console.WriteLine($"{match[0]} is matched with {match[1]}");
+                    { new LiteDbCandidate() { Name = "Jack", IsMatched = false, CandidateType = CandidateType.Proposer, Preferences = new List<string>{ "Jenny", "Sarah", "Karen" }, MatchSetId = couples.Id }},
+                    { new LiteDbCandidate() { Name = "Benjamin", IsMatched = false, CandidateType = CandidateType.Proposer, Preferences = new List<string>{ "Sarah", "Karen", "Jenny",}, MatchSetId = couples.Id }},
+                    { new LiteDbCandidate() { Name = "Charles", IsMatched = false, CandidateType = CandidateType.Proposer, Preferences = new List<string>{ "Jenny", "Karen", "Sarah" }, MatchSetId = couples.Id }}
+                };
+
+                List<ICandidate> proposees = new List<ICandidate>()
+                {
+                    { new LiteDbCandidate() { Name = "Jenny", IsMatched = false, CandidateType = CandidateType.Proposee, Preferences = new List<string>{ "Jack", "Benjamin", "Charles" }, MatchSetId = couples.Id }},
+                    { new LiteDbCandidate() { Name = "Sarah", IsMatched = false, CandidateType = CandidateType.Proposee, Preferences = new List<string>{ "Benjamin", "Jack", "Charles" }, MatchSetId = couples.Id }},
+                    { new LiteDbCandidate() { Name = "Karen", IsMatched = false, CandidateType = CandidateType.Proposee, Preferences = new List<string>{ "Chales", "Benjamin", "Jack" }, MatchSetId = couples.Id }}
+                };
+                manager.Start();
+                manager.Collect(proposers);
+                manager.Collect(proposees);
+                await Task.Delay(500);
+                if (manager.CanExecute)
+                {
+                    Console.WriteLine("Ready to execute algorithm.");
+                    foreach (List<string> match in manager.ExecuteMatch())
+                    {
+                        Console.WriteLine($"{match[0]} is matched with {match[1]}");
+                    }
                 }
+                manager.Terminate();
             }
-            manager.Terminate();
         }
     }
 }

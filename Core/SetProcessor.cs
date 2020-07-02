@@ -11,7 +11,7 @@ namespace Dorsey.StableMatchmaker
             IList<ICandidate> proposees = new List<ICandidate>();
             foreach (var candidate in candidates)
             {
-                if (candidate.CandidateType == CandidateType.Propoer)
+                if (candidate.CandidateType == CandidateType.Proposer)
                 {
                     proposers.Add(candidate);
                 }

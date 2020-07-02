@@ -5,7 +5,8 @@ namespace Dorsey.StableMatchmaker
 {
     public interface ICandidateStore : IDisposable
     {
-        IList<ICandidate> Get(string id);
+        IEnumerable<ICandidate> Get(string id);
+        int GetCount(string id);
         void Delete(IEnumerable<ICandidate> candidates);
         void Store(IEnumerable<ICandidate> candidates);
     }

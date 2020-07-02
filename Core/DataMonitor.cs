@@ -9,14 +9,14 @@ namespace Dorsey.StableMatchmaker
         public bool IsRunning { get; set; }
         private ICandidateStore CandidateStore { get; set; }
         private IMatchSetStore MatchSetStore { get; set; }
-        private string MatchSetId { get; set; }
+        private IMatchSet MatchSet { get; set; }
         public event Action<IMatchSet> Ready;
         public event Action<IMatchSet> NotReady;
-        public DataMonitor(ICandidateStore candidateStore, IMatchSetStore matchSetStore, string matchSetId)
+        public DataMonitor(ICandidateStore candidateStore, IMatchSetStore matchSetStore, IMatchSet matchSet)
          {
              this.CandidateStore = candidateStore;
              this.MatchSetStore = matchSetStore;
-             this.MatchSetId = matchSetId;
+             this.MatchSet = matchSet;
          }
 
         public async void Monitor()
@@ -24,19 +24,18 @@ namespace Dorsey.StableMatchmaker
             while (IsRunning)
             {
                 await Task.Delay(100);
-                var set = MatchSetStore.Get(MatchSetId);
-                var candidates = CandidateStore.Get(set.Id);
-                if (candidates.Count == set.Capacity)
+                var count = CandidateStore.GetCount(MatchSet.Id);
+                if (count == MatchSet.Capacity)
                 {
-                    Ready?.Invoke(set);
+                    Ready?.Invoke(MatchSet);
                 }
-                else if(candidates.Count % 2 == 0 && candidates.Count > 0)
+                else if(count % 2 == 0 && count > 0)
                 {
-                    Ready?.Invoke(set);
+                    Ready?.Invoke(MatchSet);
                 }
-                else if (candidates.Count % 2 != 0 && candidates.Count > 0)
+                else if (count % 2 != 0 && count > 0)
                 {
-                    NotReady?.Invoke(set);
+                    NotReady?.Invoke(MatchSet);
                 }
             }
         }

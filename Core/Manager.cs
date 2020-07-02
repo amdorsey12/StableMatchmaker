@@ -17,7 +17,7 @@ namespace Dorsey.StableMatchmaker
             this.CandidateStore = candidateStore;
             this.MatchSetStore = matchSetStore;
             this.Set = set;
-            this.Monitor = new DataMonitor(CandidateStore, MatchSetStore, Set.Id);
+            this.Monitor = new DataMonitor(CandidateStore, MatchSetStore, Set);
             this.Processor = new SetProcessor();
             this.Matcher = new Matcher();
             MatchSetStore.Store(Set);
