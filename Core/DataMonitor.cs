@@ -23,9 +23,9 @@ namespace Dorsey.StableMatchmaker
         {
             while (IsRunning)
             {
-                await Task.Delay(500);
+                await Task.Delay(100);
                 var set = MatchSetStore.Get(MatchSetId);
-                var candidates = (List<ICandidate>) CandidateStore.Get(set.Id);
+                var candidates = CandidateStore.Get(set.Id);
                 if (candidates.Count == set.Capacity)
                 {
                     Ready?.Invoke(set);

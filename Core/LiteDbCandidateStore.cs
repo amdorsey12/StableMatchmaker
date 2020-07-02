@@ -20,9 +20,14 @@ namespace Dorsey.StableMatchmaker
                 Collection.Delete(candidate.Id);
             }
         }
-        public IEnumerable<ICandidate> Get(string id)
+        public IList<ICandidate> Get(string id)
         {
-            return Collection.Find(x => x.MatchSetId == id);
+            var candidates = new List<ICandidate>();
+            foreach(ICandidate candidate in Collection.Find(x => x.Id == id))
+            {
+                candidates.Add(candidate);
+            }
+            return candidates;
         }
         public void Store(IEnumerable<ICandidate> candidates)
         {

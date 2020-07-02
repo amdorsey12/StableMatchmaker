@@ -11,6 +11,7 @@ namespace Dorsey.StableMatchmaker
         private ISetProcessor Processor { get; set; }
         private IMatcher Matcher { get; set; }
         private IMatchSet Set { get; set; }
+        public bool CanExecute { get; private set; }
         public Manager(ICandidateStore candidateStore, IMatchSetStore matchSetStore, IMatchSet set)
         {
             this.CandidateStore = candidateStore;
@@ -19,12 +20,19 @@ namespace Dorsey.StableMatchmaker
             this.Monitor = new DataMonitor(CandidateStore, MatchSetStore, Set.Id);
             this.Processor = new SetProcessor();
             this.Matcher = new Matcher();
-            Start();
+            MatchSetStore.Store(Set);
         }
         public IEnumerable<IEnumerable<string>> ExecuteMatch()
         {
-            var processedData = Processor.Process(CandidateStore.Get(Set.Id));
-            return Matcher.Match(processedData.Item1, processedData.Item2);
+            if (CanExecute)
+            {
+                var processedData = Processor.Process(CandidateStore.Get(Set.Id));
+                return Matcher.Match(processedData.Item1, processedData.Item2);
+            }
+            else
+            {
+                throw new InvalidOperationException();
+            }
         }
 
         public void Start()
@@ -35,6 +43,7 @@ namespace Dorsey.StableMatchmaker
             }
             else 
             {
+                Monitor.IsRunning = true;
                 Monitor.Monitor();
                 Monitor.Ready += Ready;
                 Monitor.NotReady += NotReady;
@@ -49,10 +58,12 @@ namespace Dorsey.StableMatchmaker
         public void Ready(IMatchSet matchSet)
         {
             MatchSetStore.MarkReady(matchSet.Id);
+            CanExecute = true;
         }
         public void NotReady(IMatchSet matchSet)
         {
             MatchSetStore.MarkNotReady(matchSet.Id);
+            CanExecute = false;
         }
         public void Dispose()
         {
