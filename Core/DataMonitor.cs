@@ -30,7 +30,11 @@ namespace Dorsey.StableMatchmaker
                 {
                     Ready?.Invoke(MatchSet);
                 }
-                else
+                else if (count % 2 == 0)
+                {
+                    Ready?.Invoke(MatchSet);
+                }
+                else 
                 {
                     NotReady?.Invoke(MatchSet);
                 }
