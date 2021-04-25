@@ -1,0 +1,17 @@
+<div>
+    <button class="btn-primary"  @onclick="@(() => OnUpClick.InvokeAsync(Preference))"><img src="images/up-arrow.png" height="26.67px" width="30px"/></button>
+    <button class="btn-primary"  @onclick="@(() => OnDownClick.InvokeAsync(Preference))"><img src="images/down-arrow.png" height="26.67px" width="30px"/></button>
+    <label>@Preference.Name</label>
+    <button class="btn-primary"  @onclick="@(() => OnDeleteClick.InvokeAsync(Preference))">X</button>
+</div>
+
+@code {
+
+    [Parameter] public Preference Preference { get; set; }
+    [Parameter] public EventCallback<Preference> OnDeleteClick { get; set; }
+    [Parameter] public EventCallback<Preference> OnUpClick { get; set; }
+
+    [Parameter] public EventCallback<Preference> OnDownClick { get; set; }
+
+
+}

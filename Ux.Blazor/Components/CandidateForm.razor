@@ -1,0 +1,41 @@
+@if (!IsReadyForPreferences)
+{
+    <InitializeCandidate Candidate="@Candidate" OnValidInitialize="HandleCandidatePrepSubmit" OnInvalidInitialize="HandleInvalidCandidateSubmit"/>
+}
+else
+{
+    <div>
+        <PreferenceDashboard Candidate="@Candidate" Preferences="@Preferences"/>
+        <button class="btn-primary"  @onclick="HandleFinalSubmit">Send</button>
+    </div>
+}
+
+@code {
+    
+    [Parameter] public BlazorCandidate Candidate { get; set; }
+    [Parameter] public string MatchSetId { get; set; }
+    [Parameter] public EventCallback<BlazorCandidate> OnValidSubmit { get; set; }
+    [Parameter] public EventCallback<string> OnInvalidSubmit { get; set; }
+    
+    public List<Preference> Preferences = new List<Preference>();
+    private bool IsReadyForPreferences { get; set; } = false;
+
+    void HandleCandidatePrepSubmit()
+    {
+        IsReadyForPreferences = true;
+    }
+
+    void HandleInvalidCandidateSubmit()
+    {
+        OnInvalidSubmit.InvokeAsync("Wrong!");
+    }
+
+    void HandleFinalSubmit()
+    {
+        OnValidSubmit.InvokeAsync(Candidate);
+        Preferences.Clear();
+        Candidate.Preferences.Clear();
+        IsReadyForPreferences = false;
+    }
+
+}

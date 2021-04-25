@@ -1,0 +1,55 @@
+@if (Set == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="card">
+        <div class = "card-body">
+            <h2 class="card-title">Please enter couples set details</h2>
+            <EditForm Model="Set" OnValidSubmit="HandleValidSetSubmit" OnInvalidSubmit="HandleInvalidSetSubmit">
+                <DataAnnotationsValidator />
+                <div class="form-group"> 
+                    <label for="name">Name</label>
+                    <InputText id="name" class="form-control" @bind-Value="Set.Name"/>
+                </div>
+                <div class="form-group">
+                    <label for="capacity">Capacity</label>
+                    <InputNumber id="capacity" class="form-control" @bind-Value="Set.Capacity"/>
+                </div>
+                <button type="submit" class="btn btn-primary">Create</button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+
+@code {
+    
+    [Parameter] public BlazorMatchSet Set { get; set; }
+    [Parameter] public EventCallback<BlazorMatchSet> OnValidSubmit { get; set; }
+    [Parameter] public EventCallback<string> OnInvalidSubmit { get; set; }
+    protected EditContext EditContext { get; set; }
+
+    protected override void OnInitialized()
+    {
+        EditContext = new EditContext(Set);
+    }    
+    void HandleValidSetSubmit()
+    {
+        
+        if ((Set.Capacity % 2) == 0)
+        {
+            OnValidSubmit.InvokeAsync(Set);
+        }
+        else
+        {
+            Console.WriteLine("Capacity must be an even number");
+        }
+    }
+
+    void HandleInvalidSetSubmit()
+    {
+        OnInvalidSubmit.InvokeAsync("Wrong!");
+    }
+}

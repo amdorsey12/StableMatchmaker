@@ -1,0 +1,63 @@
+@if (Results == null)
+{
+    <h1>Ready To Run!</h1>
+    <div>
+        <button @onclick="Run">Run</button>
+    </div>
+}
+else
+{
+    <h1>Your Matches!</h1>
+    <div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Matches</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var result in Results)
+                {
+                    <tr>
+                        <td>@result</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@code {
+
+    [Parameter] public List<BlazorCandidate> Candidates { get; set; }
+    [Parameter] public BlazorMatchSet Set { get; set; }
+    private List<string> Results;
+    private string test { get; set; }
+
+    async void Run()
+    {
+        Results = new List<string>();
+        using (var manager = new Manager(new BlazorCandidateStore(), new BlazorMatchSetStore(), Set))
+        {
+            manager.Start();
+            manager.Collect(Candidates);
+            await Task.Delay(500);
+            if (manager.CanExecute)
+            {
+                Console.WriteLine("Ready to execute algorithm.");
+                foreach (List<string> match in manager.ExecuteMatch())
+                {
+                    string addMe = $"{match[0]} is matched with {match[1]}.";
+                    Results.Add(addMe);
+                    test = addMe;
+                    Console.WriteLine(Results.Count());
+                    Console.WriteLine($"{match[0]} is matched with {match[1]}.");
+                    
+                }
+            }
+            manager.Terminate();
+            Console.WriteLine(test);
+            StateHasChanged();
+        }
+    }
+}

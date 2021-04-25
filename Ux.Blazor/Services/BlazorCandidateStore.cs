@@ -1,18 +1,20 @@
 using System.Collections.Generic;
+using Dorsey.StableMatchmaker;
 using LiteDB;
 using System.Linq;
+using Ux.Blazor.Models;
 
-namespace Dorsey.StableMatchmaker
+namespace Ux.Blazor.Services
 {
-    public class LiteDbCandidateStore : ICandidateStore
+    public class BlazorCandidateStore : ICandidateStore
     {
         private LiteDatabase database { get; set; }
-        private ILiteCollection<LiteDbCandidate> collection { get; set; }
+        private ILiteCollection<BlazorCandidate> collection { get; set; }
         
-        public LiteDbCandidateStore()
+        public BlazorCandidateStore()
         {
             database = new LiteDatabase(@"Candidates.db");
-            collection = database.GetCollection<LiteDbCandidate>("candidates");
+            collection = database.GetCollection<BlazorCandidate>("candidates");
         }
 
         public void Delete(IEnumerable<ICandidate> candidates)
@@ -36,7 +38,7 @@ namespace Dorsey.StableMatchmaker
 
         public void Store(IEnumerable<ICandidate> candidates)
         {
-            foreach (LiteDbCandidate candidate in candidates)
+            foreach (BlazorCandidate candidate in candidates)
             {
                 collection.Insert(candidate);
             }

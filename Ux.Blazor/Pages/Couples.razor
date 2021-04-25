@@ -1,0 +1,76 @@
+@page "/couples"
+@if (!IsCreated && !IsAtCapacity)
+{
+    <h1>Begin a new couples set</h1>
+    <SetForm Set="@Set" OnValidSubmit="HandleValidSetSubmit" OnInvalidSubmit="HandleInvalidSetSubmit"/>
+}
+else if (IsCreated && !IsAtCapacity)
+{
+    <label>@capacity Remaining</label>
+    <h1>Please add candidates to the set</h1>
+    <CandidateForm Candidate="@Candidate" MatchSetId="@MatchSetId" OnValidSubmit="HandleValidCandidateSumbit" OnInvalidSubmit="HandleInvalidCandidateSubmit"/>
+}
+else
+{
+    <ResultsDisplay Set="@Set" Candidates="@Candidates"></ResultsDisplay>
+}
+
+@code {
+    private bool IsCreated { get; set; } = false;
+    private bool IsAtCapacity { get; set; } = false;
+    public BlazorMatchSet Set { get; set; } = new BlazorMatchSet();
+    public BlazorCandidate Candidate { get; set; } = new BlazorCandidate();
+    public string MatchSetId { get; set; } = "";
+    public List<BlazorCandidate> Candidates { get; set; }
+   
+    private int capacity { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Candidates = new List<BlazorCandidate>();
+    }
+    void HandleValidSetSubmit(BlazorMatchSet set)
+    {
+        Console.WriteLine($"Set capacity is {set.Capacity} and set name is {set.Name} and set Id is {set.Id}");
+        MatchSetId = set.Id;
+        IsCreated = true;
+        //MatchSetStore.Store(set);
+        capacity = Set.Capacity;
+    }
+
+    void HandleInvalidSetSubmit(string message)
+    {
+        Console.WriteLine(message);
+    }
+
+    void HandleValidCandidateSumbit(BlazorCandidate candidate)
+    {
+        candidate.MatchSetId = Set.Id;
+        Console.WriteLine($"Candidate name is {candidate.Name} candidate type is {candidate.CandidateType} candidate's first preference is {candidate.Preferences[0]} and set Id is {candidate.MatchSetId}");
+        var addPreferences = new List<string>();
+        foreach (var preference in candidate.Preferences)
+        {
+            addPreferences.Add(preference);
+        }
+        var addCandidate = new BlazorCandidate
+        {
+            Name = candidate.Name,
+            CandidateType = candidate.CandidateType,
+            Preferences = addPreferences,
+            MatchSetId = candidate.MatchSetId
+        };
+        Candidates.Add(addCandidate);
+        
+        capacity--;
+        if (capacity == 0)
+        {
+            IsAtCapacity = true;
+        }
+
+    }
+    
+    void HandleInvalidCandidateSubmit(string message)
+    {
+        Console.WriteLine(message);
+    }
+}

@@ -25,6 +25,11 @@ namespace Dorsey.StableMatchmaker
             while (IsRunning)
             {
                 await Task.Delay(100);
+                if (!IsRunning)
+                {
+                    break;
+                }
+
                 var count = CandidateStore.GetCount(MatchSet.Id);
                 if (count == MatchSet.Capacity)
                 {

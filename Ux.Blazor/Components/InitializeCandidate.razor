@@ -1,0 +1,43 @@
+<div class="card">
+    <div class = "card-body">
+        <EditForm Model="Candidate" OnValidSubmit="HandleInitializeCandidate" OnInvalidSubmit="HandleInvalidInitializeCandidate">
+            <DataAnnotationsValidator />
+            <div class="form-group"> 
+                <label for="name">Name</label>
+                <InputText id="name" @bind-Value="Candidate.Name"/>
+            </div>
+            <div class="form-group">
+                <label for="candidateType">CandidateType</label>
+                <InputSelect id="candidateType" @bind-Value="Candidate.CandidateType">
+                    <option value="0">Proposer</option>
+                    <option value="1">Proposee</option>
+                </InputSelect>
+            </div>
+            <button type="submit" class="btn btn-primary">Initialize</button>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    
+    [Parameter] public BlazorCandidate Candidate { get; set; }
+    [Parameter] public EventCallback<BlazorCandidate> OnValidInitialize { get; set; }
+    [Parameter] public EventCallback<string> OnInvalidInitialize { get; set; }
+    protected EditContext EditContext { get; set; }
+
+    protected override void OnInitialized()
+    {
+        EditContext = new EditContext(Candidate);
+    }
+
+
+    void HandleInitializeCandidate()
+    {
+        OnValidInitialize.InvokeAsync(Candidate);
+    }
+
+    void HandleInvalidInitializeCandidate()
+    {
+        Console.WriteLine("Invalid candidate");
+    }
+}

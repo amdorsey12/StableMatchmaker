@@ -1,0 +1,50 @@
+<div>
+    <PreferenceForm OnAddClick="HandlePreferenceAdd"/>
+</div>
+<div>
+    <EditablePreferencesList Preferences="@Preferences" OnDeleteClick="HandleDelete" OnUpClick="HandleUp" OnDownClick="HandleDown"/>
+</div>
+<div>Icons made by <a href="https://www.flaticon.com/authors/pixel-perfect" title="Pixel perfect">Pixel perfect</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+
+@code {
+    
+    [Parameter] public BlazorCandidate Candidate { get; set; }
+    [Parameter] public List<Preference> Preferences { get; set; }
+    [Parameter] public EventCallback<string> OnInvalidSubmit { get; set; }
+
+    void HandlePreferenceAdd(Preference preference)
+    {
+        Candidate.Preferences.Add(preference.Name);
+        Preferences.Add(preference);
+    }
+
+    void HandleDelete(Preference preference)
+    {
+        Candidate.Preferences.Remove(Candidate.Preferences.Where(x => x == preference.Name).FirstOrDefault());
+        Preferences.Remove(Preferences.Where(x => x.Id == preference.Id).FirstOrDefault());
+    }
+
+    void HandleUp(Preference preference)
+    {
+        Swap(Candidate.Preferences, Candidate.Preferences.IndexOf(preference.Name), (Candidate.Preferences.IndexOf(preference.Name) - 1));
+        Swap(Preferences, Preferences.IndexOf(preference), (Preferences.IndexOf(preference) - 1));
+    }
+
+    void HandleDown(Preference preference)
+    {
+        Swap(Candidate.Preferences, Candidate.Preferences.IndexOf(preference.Name), (Candidate.Preferences.IndexOf(preference.Name) + 1));
+        Swap(Preferences, Preferences.IndexOf(preference), (Preferences.IndexOf(preference) + 1));
+    }
+
+    void Swap<T>(IList<T> list, int indexA, int indexB)
+    {
+        T tmp = list[indexA];
+        list[indexA] = list[indexB];
+        list[indexB] = tmp;
+    }
+
+    void HandleInvalidCandidateSubmit()
+    {
+        OnInvalidSubmit.InvokeAsync("Wrong!");
+    }
+}

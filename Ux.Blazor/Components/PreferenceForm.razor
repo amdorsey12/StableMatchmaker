@@ -1,0 +1,34 @@
+<div>
+    <EditForm Model="Preference" OnValidSubmit="HandleValidPreferenceAdd" OnInvalidSubmit="HandleInvalidPreferenceAdd">
+        <DataAnnotationsValidator />
+        <label for="name">Name</label>
+        <InputText id="name" @bind-Value="Preference.Name"/>
+        <button type="submit" class="btn btn-primary">Add</button>
+    </EditForm>
+</div>
+
+@code {
+
+    
+    [Parameter] public EventCallback<Preference> OnAddClick { get; set; }
+
+    protected Preference Preference { get; set; } = new Preference();
+    protected EditContext EditContext { get; set; }
+
+    protected override void OnInitialized()
+    {
+        EditContext = new EditContext(Preference);
+    }
+
+    void HandleValidPreferenceAdd()
+    {
+        OnAddClick.InvokeAsync(Preference);
+        Preference = new Preference();
+        EditContext = new EditContext(Preference);
+    }
+
+    void HandleInvalidPreferenceAdd()
+    {
+        Console.WriteLine("Wrong!");
+    }
+}

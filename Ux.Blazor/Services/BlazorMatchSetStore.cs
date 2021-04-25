@@ -1,14 +1,15 @@
 using System.Collections.Generic;
+using Dorsey.StableMatchmaker;
 using LiteDB;
 
-namespace Dorsey.StableMatchmaker
+namespace Ux.Blazor.Services
 {
-    public class LiteDbMatchSetStore : IMatchSetStore
+    public class BlazorMatchSetStore : IMatchSetStore
     {
         private LiteDatabase database { get; set; }
         private ILiteCollection<IMatchSet> collection { get; set; }
         
-        public LiteDbMatchSetStore()
+        public BlazorMatchSetStore()
         {
             database = new LiteDatabase(@"MatchSets.db");
             collection = database.GetCollection<IMatchSet>("matchsets");

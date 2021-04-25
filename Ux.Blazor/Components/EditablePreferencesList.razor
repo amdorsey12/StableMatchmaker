@@ -1,0 +1,46 @@
+@if(Preferences == null)
+{
+    <h1>Loading...</h1>
+}
+else
+{
+    <div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Preference</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var preference in Preferences)
+                {
+                    <tr>
+                        <td><CandidatePreference Preference="@preference" OnDeleteClick="Delete" OnUpClick="Up" OnDownClick="Down"/></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@code {
+    [Parameter] public IList<Preference> Preferences { get; set; }
+    [Parameter] public EventCallback<Preference> OnDeleteClick { get; set; }
+    [Parameter] public EventCallback<Preference> OnUpClick { get; set; }
+    [Parameter] public EventCallback<Preference> OnDownClick { get; set; }
+    
+    void Delete(Preference preference)
+    {
+        OnDeleteClick.InvokeAsync(preference);
+    }
+
+    void Up(Preference preference)
+    {
+        OnUpClick.InvokeAsync(preference);
+    }
+    
+    void Down(Preference preference)
+    {
+        OnDownClick.InvokeAsync(preference);
+    }
+}
